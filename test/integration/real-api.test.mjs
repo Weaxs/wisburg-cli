@@ -6,7 +6,7 @@ import { resources } from "../../dist/api.js";
 const apiKey = process.env.WISBURG_API_KEY;
 const liveTest = apiKey ? test : test.skip;
 
-liveTest("real Wisburg API endpoints work through the CLI", async t => {
+liveTest("real Wisburg API endpoints work through the CLI", async (t) => {
   for (const resource of resources) {
     await t.test(`${resource.name} list`, async () => {
       const result = await runCli([resource.name, "list", "--first", "1"]);
@@ -19,7 +19,7 @@ liveTest("real Wisburg API endpoints work through the CLI", async t => {
     });
 
     if (resource.hasDetail) {
-      await t.test(`${resource.name} get`, async t => {
+      await t.test(`${resource.name} get`, async (t) => {
         const listResult = await runCli([resource.name, "list", "--first", "1"]);
         assert.equal(listResult.code, 0, listResult.stderr);
 
@@ -37,7 +37,10 @@ liveTest("real Wisburg API endpoints work through the CLI", async t => {
 
         const detailPayload = parseJsonOutput(detailResult.stdout);
         assertResponseEnvelope(detailPayload);
-        assert(detailPayload.data && typeof detailPayload.data === "object", "detail response data should be an object");
+        assert(
+          detailPayload.data && typeof detailPayload.data === "object",
+          "detail response data should be an object",
+        );
       });
     }
   }
@@ -64,23 +67,23 @@ function runCli(args) {
       env: {
         ...process.env,
         WISBURG_API_KEY: apiKey,
-        WISBURG_CONFIG_DIR: "/tmp/wisburg-cli-integration-config"
+        WISBURG_CONFIG_DIR: "/tmp/wisburg-cli-integration-config",
       },
-      stdio: ["ignore", "pipe", "pipe"]
+      stdio: ["ignore", "pipe", "pipe"],
     });
 
     let stdout = "";
     let stderr = "";
     child.stdout.setEncoding("utf8");
     child.stderr.setEncoding("utf8");
-    child.stdout.on("data", chunk => {
+    child.stdout.on("data", (chunk) => {
       stdout += chunk;
     });
-    child.stderr.on("data", chunk => {
+    child.stderr.on("data", (chunk) => {
       stderr += chunk;
     });
     child.on("error", reject);
-    child.on("close", code => {
+    child.on("close", (code) => {
       resolve({ code, stdout, stderr });
     });
   });

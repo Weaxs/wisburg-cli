@@ -20,5 +20,5 @@ export const resources: Resource[] = [
   { name: "market-daily", path: "/api/market-daily", description: "AI市场日报", hasDetail: false },
   { name: "feed", path: "/api/feed", description: "资讯流", hasDetail: false },
   { name: "images", path: "/api/images", description: "图片流", hasDetail: false },
-  { name: "am-reports", path: "/api/am-reports", description: "资管报告", hasDetail: true }
+  { name: "am-reports", path: "/api/am-reports", description: "资管报告", hasDetail: true },
 ];

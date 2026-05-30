@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { Command } from "commander";
-import { resources, type Resource } from "./api.js";
-import { WisburgClient, WisburgError, type RequestParams } from "./client.js";
+import { type Resource, resources } from "./api.js";
+import { type RequestParams, WisburgClient, WisburgError } from "./client.js";
 import { loadConfig, resolveApiKey, resolveBaseUrl, saveConfig } from "./config.js";
 
 export type ClientFactory = (options: {
@@ -10,7 +10,7 @@ export type ClientFactory = (options: {
   timeoutMs: number;
 }) => Pick<WisburgClient, "get" | "request">;
 
-export function createProgram(clientFactory: ClientFactory = options => new WisburgClient(options)): Command {
+export function createProgram(clientFactory: ClientFactory = (options) => new WisburgClient(options)): Command {
   const program = new Command();
 
   program
@@ -38,7 +38,7 @@ function addConfigCommands(program: Command): void {
     .command("set-api-key")
     .description("Store an API key in local config.")
     .argument("<apiKey>", "API key to store.")
-    .action(async apiKey => {
+    .action(async (apiKey) => {
       const current = await loadConfig();
       await saveConfig({ ...current, apiKey });
       console.log("Saved API key.");
@@ -48,7 +48,7 @@ function addConfigCommands(program: Command): void {
     .command("set-base-url")
     .description("Store a custom base URL in local config.")
     .argument("<baseUrl>", "Base URL to store.")
-    .action(async baseUrl => {
+    .action(async (baseUrl) => {
       const current = await loadConfig();
       await saveConfig({ ...current, baseUrl });
       console.log("Saved base URL.");
@@ -90,7 +90,7 @@ function addResourceCommand(program: Command, resource: Resource, clientFactory:
     .option("--query <keyword>", "Search keyword.")
     .option("--start-time <time>", "Start time, timestamp or ISO format.")
     .option("--end-time <time>", "End time, timestamp or ISO format.")
-    .action(async options => {
+    .action(async (options) => {
       const client = await makeClient(program, clientFactory);
       const params = toListParams(options);
       const result = await client.get(resource.path, params);
@@ -102,7 +102,7 @@ function addResourceCommand(program: Command, resource: Resource, clientFactory:
       .command("get")
       .description(`Get one ${resource.description} item by ID.`)
       .argument("<id>", "Resource ID.")
-      .action(async id => {
+      .action(async (id) => {
         const client = await makeClient(program, clientFactory);
         const result = await client.get(`${resource.path}/${id}`);
         printResponse(result, Boolean(program.opts().raw));
@@ -110,7 +110,10 @@ function addResourceCommand(program: Command, resource: Resource, clientFactory:
   }
 }
 
-async function makeClient(program: Command, clientFactory: ClientFactory): Promise<Pick<WisburgClient, "get" | "request">> {
+async function makeClient(
+  program: Command,
+  clientFactory: ClientFactory,
+): Promise<Pick<WisburgClient, "get" | "request">> {
   const globalOptions = program.opts();
   const apiKey = await resolveApiKey(globalOptions.apiKey);
 
@@ -121,7 +124,7 @@ async function makeClient(program: Command, clientFactory: ClientFactory): Promi
   return clientFactory({
     apiKey,
     baseUrl: await resolveBaseUrl(globalOptions.baseUrl),
-    timeoutMs: Number(globalOptions.timeout) * 1000
+    timeoutMs: Number(globalOptions.timeout) * 1000,
   });
 }
 
@@ -131,7 +134,7 @@ function toListParams(options: Record<string, unknown>): RequestParams {
     after: options.after as string | undefined,
     query: options.query as string | undefined,
     startTime: options.startTime as string | undefined,
-    endTime: options.endTime as string | undefined
+    endTime: options.endTime as string | undefined,
   };
 }
 

@@ -5,7 +5,7 @@ import { buildUrl } from "../dist/client.js";
 test("buildUrl filters empty params", () => {
   assert.equal(
     buildUrl("https://api-omen.wisburg.com/", "/api/reports", { first: 10, after: "", query: undefined }),
-    "https://api-omen.wisburg.com/api/reports?first=10"
+    "https://api-omen.wisburg.com/api/reports?first=10",
   );
 });
 

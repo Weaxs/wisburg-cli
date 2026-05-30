@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
-import { createServer } from "node:http";
-import { once } from "node:events";
 import { spawn } from "node:child_process";
+import { once } from "node:events";
+import { createServer } from "node:http";
 import test from "node:test";
 
 test("real CLI binary calls a list endpoint with auth and query params", async () => {
@@ -10,7 +10,7 @@ test("real CLI binary calls a list endpoint with auth and query params", async (
     requests.push({
       method: req.method,
       url: req.url,
-      authorization: req.headers.authorization
+      authorization: req.headers.authorization,
     });
     res.setHeader("Content-Type", "application/json");
     res.end(JSON.stringify({ code: 200, data: { items: [{ id: 1, title: "ok" }] } }));
@@ -20,13 +20,10 @@ test("real CLI binary calls a list endpoint with auth and query params", async (
   const baseUrl = serverBaseUrl(server);
 
   try {
-    const result = await runCli(
-      ["reports", "list", "--first", "1", "--query", "macro"],
-      {
-        WISBURG_API_KEY: "test-key",
-        WISBURG_BASE_URL: baseUrl
-      }
-    );
+    const result = await runCli(["reports", "list", "--first", "1", "--query", "macro"], {
+      WISBURG_API_KEY: "test-key",
+      WISBURG_BASE_URL: baseUrl,
+    });
 
     assert.equal(result.code, 0);
     assert.deepEqual(JSON.parse(result.stdout), { code: 200, data: { items: [{ id: 1, title: "ok" }] } });
@@ -34,8 +31,8 @@ test("real CLI binary calls a list endpoint with auth and query params", async (
       {
         method: "GET",
         url: "/api/reports?first=1&query=macro",
-        authorization: "Bearer test-key"
-      }
+        authorization: "Bearer test-key",
+      },
     ]);
   } finally {
     server.close();
@@ -55,7 +52,7 @@ test("real CLI binary calls a detail endpoint", async () => {
   try {
     const result = await runCli(["am-reports", "get", "123"], {
       WISBURG_API_KEY: "test-key",
-      WISBURG_BASE_URL: serverBaseUrl(server)
+      WISBURG_BASE_URL: serverBaseUrl(server),
     });
 
     assert.equal(result.code, 0);
@@ -69,7 +66,7 @@ test("real CLI binary calls a detail endpoint", async () => {
 test("real CLI binary fails clearly when API key is missing", async () => {
   const result = await runCli(["feed", "list"], {
     WISBURG_API_KEY: "",
-    WISBURG_CONFIG_DIR: "/tmp/wisburg-cli-test-missing-config"
+    WISBURG_CONFIG_DIR: "/tmp/wisburg-cli-test-missing-config",
   });
 
   assert.equal(result.code, 1);
@@ -93,23 +90,23 @@ function runCli(args, envOverrides = {}) {
       cwd: process.cwd(),
       env: {
         ...process.env,
-        ...envOverrides
+        ...envOverrides,
       },
-      stdio: ["ignore", "pipe", "pipe"]
+      stdio: ["ignore", "pipe", "pipe"],
     });
 
     let stdout = "";
     let stderr = "";
     child.stdout.setEncoding("utf8");
     child.stderr.setEncoding("utf8");
-    child.stdout.on("data", chunk => {
+    child.stdout.on("data", (chunk) => {
       stdout += chunk;
     });
-    child.stderr.on("data", chunk => {
+    child.stderr.on("data", (chunk) => {
       stderr += chunk;
     });
     child.on("error", reject);
-    child.on("close", code => {
+    child.on("close", (code) => {
       resolve({ code, stdout, stderr });
     });
   });

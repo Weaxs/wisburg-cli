@@ -46,7 +46,7 @@ export class WisburgClient {
   async request(
     method: string,
     path: string,
-    options: { params?: RequestParams; body?: unknown } = {}
+    options: { params?: RequestParams; body?: unknown } = {},
   ): Promise<{ payload: unknown; raw: string }> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
@@ -58,10 +58,10 @@ export class WisburgClient {
           Authorization: `Bearer ${this.apiKey}`,
           Accept: "application/json",
           "User-Agent": "wisburg-cli/0.1.0",
-          ...(options.body === undefined ? {} : { "Content-Type": "application/json" })
+          ...(options.body === undefined ? {} : { "Content-Type": "application/json" }),
         },
         body: options.body === undefined ? undefined : JSON.stringify(options.body),
-        signal: controller.signal
+        signal: controller.signal,
       });
 
       const raw = await response.text();
