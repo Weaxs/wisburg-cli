@@ -1,0 +1,38 @@
+{
+  "name": "wisburg-cli",
+  "version": "0.1.0",
+  "description": "Command line client for Wisburg Open API.",
+  "type": "module",
+  "bin": {
+    "wisburg": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepack": "npm run build",
+    "test": "npm run build && node --test test/*.test.mjs",
+    "test:integration": "npm run build && node --test test/integration/*.test.mjs",
+    "start": "node dist/cli.js"
+  },
+  "keywords": [
+    "wisburg",
+    "api",
+    "cli"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^14.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
