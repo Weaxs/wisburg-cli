@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    env:
+      HAS_WISBURG_API_KEY: ${{ secrets.WISBURG_API_KEY != '' }}
+      WISBURG_API_KEY: ${{ secrets.WISBURG_API_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Run unit and CLI tests
+        run: npm test
+
+      - name: Validate package
+        run: npm pack --dry-run
+
+      - name: Run Wisburg API integration tests
+        if: env.HAS_WISBURG_API_KEY == 'true'
+        run: npm run test:integration
+
+      - name: Skip Wisburg API integration tests
+        if: env.HAS_WISBURG_API_KEY != 'true'
+        run: echo "WISBURG_API_KEY secret is not configured; skipping live API integration tests."
