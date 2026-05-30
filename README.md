@@ -1,6 +1,8 @@
 # Wisburg CLI
 
-Wisburg Open API 的 Node/TypeScript 命令行封装，覆盖文档中的所有 REST 接口。
+智堡（Wisburg）Open API 的 Node/TypeScript 命令行封装，覆盖文档中的所有 REST 接口。
+
+English documentation: [README_EN.md](./README_EN.md)
 
 ## 安装
 
@@ -46,23 +48,25 @@ node dist/cli.js reports list --first 10
 
 ## 已封装接口
 
-| 命令 | 接口 |
-| --- | --- |
-| `wisburg reports list` | `GET /api/reports` |
-| `wisburg reports get <id>` | `GET /api/reports/:id` |
-| `wisburg archives list` | `GET /api/archives` |
-| `wisburg archives get <id>` | `GET /api/archives/:id` |
-| `wisburg company-reports list` | `GET /api/company-reports` |
-| `wisburg company-reports get <id>` | `GET /api/company-reports/:id` |
-| `wisburg earningscalls list` | `GET /api/earningscalls` |
-| `wisburg earningscalls get <id>` | `GET /api/earningscalls/:id` |
-| `wisburg articles list` | `GET /api/articles` |
-| `wisburg articles get <id>` | `GET /api/articles/:id` |
-| `wisburg market-daily list` | `GET /api/market-daily` |
-| `wisburg feed list` | `GET /api/feed` |
-| `wisburg images list` | `GET /api/images` |
-| `wisburg am-reports list` | `GET /api/am-reports` |
-| `wisburg am-reports get <id>` | `GET /api/am-reports/:id` |
+官方 API 文档入口：[智堡 Open API 文档](https://open-docs.wisburg.com/docs/getting-started/first-call)
+
+| 资源 | 命令 | 接口 | API 文档 |
+| --- | --- | --- | --- |
+| 研报笔记 | `wisburg reports list` | `GET /api/reports` | [文档](https://open-docs.wisburg.com/docs/api/reports) |
+| 研报笔记 | `wisburg reports get <id>` | `GET /api/reports/:id` | [文档](https://open-docs.wisburg.com/docs/api/reports) |
+| 文献 | `wisburg archives list` | `GET /api/archives` | [文档](https://open-docs.wisburg.com/docs/api/archives) |
+| 文献 | `wisburg archives get <id>` | `GET /api/archives/:id` | [文档](https://open-docs.wisburg.com/docs/api/archives) |
+| 企业研究 | `wisburg company-reports list` | `GET /api/company-reports` | [文档](https://open-docs.wisburg.com/docs/api/company-reports) |
+| 企业研究 | `wisburg company-reports get <id>` | `GET /api/company-reports/:id` | [文档](https://open-docs.wisburg.com/docs/api/company-reports) |
+| 电话会纪要 | `wisburg earningscalls list` | `GET /api/earningscalls` | [文档](https://open-docs.wisburg.com/docs/api/earningscalls) |
+| 电话会纪要 | `wisburg earningscalls get <id>` | `GET /api/earningscalls/:id` | [文档](https://open-docs.wisburg.com/docs/api/earningscalls) |
+| 文章 | `wisburg articles list` | `GET /api/articles` | [文档](https://open-docs.wisburg.com/docs/api/articles) |
+| 文章 | `wisburg articles get <id>` | `GET /api/articles/:id` | [文档](https://open-docs.wisburg.com/docs/api/articles) |
+| AI 市场日报 | `wisburg market-daily list` | `GET /api/market-daily` | [文档](https://open-docs.wisburg.com/docs/api/market-daily) |
+| 资讯流 | `wisburg feed list` | `GET /api/feed` | [文档](https://open-docs.wisburg.com/docs/api/feed) |
+| 图片流 | `wisburg images list` | `GET /api/images` | [文档](https://open-docs.wisburg.com/docs/api/images) |
+| 资管报告 | `wisburg am-reports list` | `GET /api/am-reports` | [文档](https://open-docs.wisburg.com/docs/api/am-reports) |
+| 资管报告 | `wisburg am-reports get <id>` | `GET /api/am-reports/:id` | [文档](https://open-docs.wisburg.com/docs/api/am-reports) |
 
 所有列表接口都支持：
 
