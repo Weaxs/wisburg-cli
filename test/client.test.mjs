@@ -12,3 +12,7 @@ test("buildUrl filters empty params", () => {
 test("buildUrl accepts path without leading slash", () => {
   assert.equal(buildUrl("https://example.com", "api/reports"), "https://example.com/api/reports");
 });
+
+test("buildUrl preserves base URL path prefixes", () => {
+  assert.equal(buildUrl("https://example.com/v1", "/api/reports"), "https://example.com/v1/api/reports");
+});

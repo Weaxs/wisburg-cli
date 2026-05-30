@@ -155,6 +155,24 @@ test("raw request parses query and json body", async () => {
   assert.deepEqual(calls, [["POST", "/api/example", { params: { a: "1" }, body: { b: 2 } }]]);
 });
 
+test("invalid timeout values fail before constructing client", async () => {
+  const restoreLog = silenceConsoleLog();
+  const program = createProgram(() => {
+    throw new Error("client should not be constructed");
+  });
+  program.exitOverride();
+
+  process.env.WISBURG_API_KEY = "test-key";
+  try {
+    await assert.rejects(
+      program.parseAsync(["node", "wisburg", "--timeout", "-1", "reports", "list"]),
+      /Invalid timeout value: -1/,
+    );
+  } finally {
+    restoreLog();
+  }
+});
+
 function silenceConsoleLog() {
   const original = console.log;
   console.log = () => {};

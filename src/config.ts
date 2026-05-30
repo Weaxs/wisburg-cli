@@ -37,7 +37,7 @@ export async function loadConfig(): Promise<WisburgConfig> {
 
 export async function saveConfig(config: WisburgConfig): Promise<void> {
   await mkdir(getConfigDir(), { recursive: true });
-  await writeFile(getConfigPath(), `${JSON.stringify(config, null, 2)}\n`, "utf8");
+  await writeFile(getConfigPath(), `${JSON.stringify(config, null, 2)}\n`, { encoding: "utf8", mode: 0o600 });
   await chmod(getConfigPath(), 0o600);
 }
 

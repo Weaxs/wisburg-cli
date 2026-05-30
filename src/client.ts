@@ -89,7 +89,9 @@ export class WisburgClient {
 }
 
 export function buildUrl(baseUrl: string, path: string, params: RequestParams = {}): string {
-  const url = new URL(path.startsWith("/") ? path : `/${path}`, baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`);
+  const base = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
+  const relativePath = path.startsWith("/") ? path.slice(1) : path;
+  const url = new URL(relativePath, base);
 
   for (const [key, value] of Object.entries(params)) {
     if (value !== undefined && value !== null && value !== "") {

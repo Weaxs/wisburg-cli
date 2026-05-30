@@ -121,10 +121,15 @@ async function makeClient(
     throw new Error("Missing API key. Set WISBURG_API_KEY or run `wisburg config set-api-key <key>`.");
   }
 
+  const timeoutSec = Number(globalOptions.timeout);
+  if (!Number.isFinite(timeoutSec) || timeoutSec <= 0) {
+    throw new Error(`Invalid timeout value: ${globalOptions.timeout}. Must be a positive number.`);
+  }
+
   return clientFactory({
     apiKey,
     baseUrl: await resolveBaseUrl(globalOptions.baseUrl),
-    timeoutMs: Number(globalOptions.timeout) * 1000,
+    timeoutMs: timeoutSec * 1000,
   });
 }
 
