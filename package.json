@@ -28,6 +28,14 @@
   ],
   "author": "",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Weaxs/wisburg-cli.git"
+  },
+  "homepage": "https://github.com/Weaxs/wisburg-cli#readme",
+  "bugs": {
+    "url": "https://github.com/Weaxs/wisburg-cli/issues"
+  },
   "dependencies": {
     "commander": "^14.0.2"
   },
