@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { once } from "node:events";
+import { mkdtempSync, rmSync, symlinkSync } from "node:fs";
 import { createServer } from "node:http";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import test from "node:test";
 
 test("real CLI binary calls a list endpoint with auth and query params", async () => {
@@ -71,6 +74,59 @@ test("real CLI binary fails clearly when API key is missing", async () => {
 
   assert.equal(result.code, 1);
   assert.match(result.stderr, /Missing API key/);
+});
+
+test("real CLI binary still runs when invoked through a symlink (npm global install)", async () => {
+  // Reproduces the npm-global-install scenario: `process.argv[1]` is the
+  // symlink path while `import.meta.url` resolves to the real cli.js path.
+  // If the entry-point check ignores symlinks, the process exits 0 with no
+  // output, which is the bug this test guards against.
+  const requests = [];
+  const server = createServer((req, res) => {
+    requests.push({ url: req.url });
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify({ code: 200, data: { items: [{ id: 1 }] } }));
+  });
+
+  await listen(server);
+
+  const tmpBinDir = mkdtempSync(path.join(tmpdir(), "wisburg-cli-bin-"));
+  const symlinkPath = path.join(tmpBinDir, "wisburg");
+  symlinkSync(path.resolve("dist/cli.js"), symlinkPath);
+
+  try {
+    const result = await new Promise((resolve, reject) => {
+      const child = spawn(process.execPath, [symlinkPath, "reports", "list", "--first", "1"], {
+        cwd: process.cwd(),
+        env: {
+          ...process.env,
+          WISBURG_API_KEY: "test-key",
+          WISBURG_BASE_URL: serverBaseUrl(server),
+        },
+        stdio: ["ignore", "pipe", "pipe"],
+      });
+      let stdout = "";
+      let stderr = "";
+      child.stdout.setEncoding("utf8");
+      child.stderr.setEncoding("utf8");
+      child.stdout.on("data", (c) => {
+        stdout += c;
+      });
+      child.stderr.on("data", (c) => {
+        stderr += c;
+      });
+      child.on("error", reject);
+      child.on("close", (code) => resolve({ code, stdout, stderr }));
+    });
+
+    assert.equal(result.code, 0, `cli exited ${result.code}, stderr: ${result.stderr}`);
+    assert.notEqual(result.stdout.trim(), "", "cli produced no output when invoked via symlink");
+    assert.deepEqual(JSON.parse(result.stdout), { code: 200, data: { items: [{ id: 1 }] } });
+    assert.equal(requests.length, 1);
+  } finally {
+    rmSync(tmpBinDir, { recursive: true, force: true });
+    server.close();
+  }
 });
 
 async function listen(server) {

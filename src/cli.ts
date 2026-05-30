@@ -1,8 +1,11 @@
 #!/usr/bin/env node
+import { realpathSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { Command } from "commander";
 import { type Resource, resources } from "./api.js";
 import { type RequestParams, WisburgClient, WisburgError } from "./client.js";
 import { loadConfig, resolveApiKey, resolveBaseUrl, saveConfig } from "./config.js";
+import { VERSION } from "./version.js";
 
 export type ClientFactory = (options: {
   apiKey: string;
@@ -16,6 +19,7 @@ export function createProgram(clientFactory: ClientFactory = (options) => new Wi
   program
     .name("wisburg")
     .description("Command line client for Wisburg Open API.")
+    .version(VERSION, "-v, --version", "Print the wisburg CLI version.")
     .option("--api-key <key>", "Wisburg API key. Defaults to WISBURG_API_KEY or local config.")
     .option("--base-url <url>", "Wisburg API base URL. Defaults to WISBURG_BASE_URL or https://api-omen.wisburg.com.")
     .option("--timeout <seconds>", "HTTP timeout in seconds.", parseFloat, 30)
@@ -201,6 +205,21 @@ export async function run(argv = process.argv): Promise<void> {
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (isMainEntry()) {
   await run();
+}
+
+function isMainEntry(): boolean {
+  // When installed via `npm install -g`, the bin is a symlink (e.g.
+  // /usr/local/bin/wisburg -> .../dist/cli.js). Node sets `process.argv[1]`
+  // to the symlink path but resolves `import.meta.url` to the real path, so
+  // a plain string compare would always be false and `run()` would never
+  // execute. Compare resolved real paths instead.
+  const argv1 = process.argv[1];
+  if (!argv1) return false;
+  try {
+    return fileURLToPath(import.meta.url) === realpathSync(argv1);
+  } catch {
+    return false;
+  }
 }
