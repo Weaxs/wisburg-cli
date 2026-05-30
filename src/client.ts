@@ -1,3 +1,5 @@
+import { VERSION } from "./version.js";
+
 export class WisburgError extends Error {
   constructor(message: string) {
     super(message);
@@ -57,7 +59,7 @@ export class WisburgClient {
         headers: {
           Authorization: `Bearer ${this.apiKey}`,
           Accept: "application/json",
-          "User-Agent": "wisburg-cli/0.1.0",
+          "User-Agent": `wisburg-cli/${VERSION}`,
           ...(options.body === undefined ? {} : { "Content-Type": "application/json" }),
         },
         body: options.body === undefined ? undefined : JSON.stringify(options.body),
