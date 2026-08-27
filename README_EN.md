@@ -67,6 +67,8 @@ Official documentation entry point: [智堡 Open API Docs](https://open-docs.wis
 | Image feed | `wisburg images list` | `GET /api/images` | [Docs](https://open-docs.wisburg.com/docs/api/images) |
 | Asset management reports | `wisburg am-reports list` | `GET /api/am-reports` | [Docs](https://open-docs.wisburg.com/docs/api/am-reports) |
 | Asset management reports | `wisburg am-reports get <id>` | `GET /api/am-reports/:id` | [Docs](https://open-docs.wisburg.com/docs/api/am-reports) |
+| Mikko logs | `wisburg mikko-logs list` | `GET /api/mikko-logs` | [Docs](https://open-docs.wisburg.com/docs/api/mikko-logs) |
+| Mikko logs | `wisburg mikko-logs get <id>` | `GET /api/mikko-logs/:id` | [Docs](https://open-docs.wisburg.com/docs/api/mikko-logs) |
 
 All list commands support:
 

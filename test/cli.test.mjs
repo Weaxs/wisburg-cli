@@ -13,6 +13,7 @@ const expectedResources = [
   { name: "feed", path: "/api/feed", hasDetail: false },
   { name: "images", path: "/api/images", hasDetail: false },
   { name: "am-reports", path: "/api/am-reports", hasDetail: true },
+  { name: "mikko-logs", path: "/api/mikko-logs", hasDetail: true },
 ];
 
 test("resource registry matches all documented Wisburg APIs", () => {
@@ -120,6 +121,46 @@ test("articles get builds expected request", async () => {
   }
 
   assert.deepEqual(calls, [["GET", "/api/articles/789", undefined]]);
+});
+
+test("mikko-logs list builds expected request", async () => {
+  const calls = [];
+  const restoreLog = silenceConsoleLog();
+  const program = createProgram(() => ({
+    get: async (path, params) => {
+      calls.push(["GET", path, params]);
+      return { payload: { ok: true }, raw: '{"ok":true}' };
+    },
+    request: async () => {
+      throw new Error("unexpected raw request");
+    },
+  }));
+
+  process.env.WISBURG_API_KEY = "test-key";
+  try {
+    await program.parseAsync([
+      "node",
+      "wisburg",
+      "mikko-logs",
+      "list",
+      "--first",
+      "20",
+      "--start-time",
+      "2026-08-26",
+      "--end-time",
+      "2026-08-27",
+    ]);
+  } finally {
+    restoreLog();
+  }
+
+  assert.deepEqual(calls, [
+    [
+      "GET",
+      "/api/mikko-logs",
+      { first: 20, after: undefined, query: undefined, startTime: "2026-08-26", endTime: "2026-08-27" },
+    ],
+  ]);
 });
 
 test("raw request parses query and json body", async () => {
