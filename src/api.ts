@@ -21,4 +21,5 @@ export const resources: Resource[] = [
   { name: "feed", path: "/api/feed", description: "资讯流", hasDetail: false },
   { name: "images", path: "/api/images", description: "图片流", hasDetail: false },
   { name: "am-reports", path: "/api/am-reports", description: "资管报告", hasDetail: true },
+  { name: "mikko-logs", path: "/api/mikko-logs", description: "Mikko日志", hasDetail: true },
 ];

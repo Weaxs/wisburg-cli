@@ -1,0 +1,47 @@
+{
+  "skill_name": "wisburg-research",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "帮我看看最近关于美联储的宏观研报,挑3-5篇,给我标题和大概观点",
+      "expected_output": "调用 wisburg reports list 带 --query 美联储 --first 5,然后把结果整理成中文条目(标题+摘要+发布时间),不直接抛 JSON",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "今天的 AI 市场日报有什么内容?",
+      "expected_output": "调用 wisburg market-daily list --first 1,提取主要内容做中文摘要",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "我想看一下英伟达最新的电话会纪要",
+      "expected_output": "调用 wisburg earningscalls list --query 英伟达(或 NVIDIA),找到对应记录后用 get 拉详情并做关键观点摘要",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "找一篇最新的美联储研报,把全文内容整理给我",
+      "expected_output": "先 list 拿到最新一篇的 id,再用 reports get <id>(或 wisburg request GET /api/reports/<id> 兜底)拿详情,输出完整正文摘要,而不是只给标题",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "英伟达最近的电话会和相关公司研报(company-reports)一起整理一下",
+      "expected_output": "至少调用两个资源(earningscalls + company-reports),都带英伟达/NVIDIA 关键词,把两类内容分类组织在同一份输出里",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "找一篇关于'量子计算央行数字货币'的研报",
+      "expected_output": "list 后大概率零命中。skill 应该识别空结果,主动尝试拆词/换关键词(如分别搜'量子计算'、'央行数字货币'、'CBDC'),或明确告诉用户没找到并建议替代关键词,而不是编造内容",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "看看 mikko 今天写了什么",
+      "expected_output": "调用 wisburg mikko-logs list(带当天时间窗或用 --first 取最近若干条),按时间整理成中文条目呈现;列表的 content 即全文,不应再逐条 get 详情",
+      "files": []
+    }
+  ]
+}

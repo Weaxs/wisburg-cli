@@ -1,6 +1,6 @@
 ---
 name: wisburg-research
-description: 通过 wisburg CLI 查询智堡（Wisburg）Open API 的财经研究数据 —— 包括宏观/策略研报、企业研究报告、电话会纪要、财经资讯流、AI 市场日报、文章、文献和资管报告。当用户提到"查研报"、"宏观/策略报告"、"某公司的研究/财报会议"、"市场日报"、"今日财经资讯"、"智堡"、"wisburg"，或者询问中国/海外市场的研究观点、资讯动向、机构观点时，**主动使用本 skill**——即使用户没有明确说"用 wisburg"。也适用于需要按时间窗口或关键词检索财经研究素材的研究/投研工作流。
+description: 通过 wisburg CLI 查询智堡（Wisburg）Open API 的财经研究数据 —— 包括宏观/策略研报、企业研究报告、电话会纪要、财经资讯流、Mikko 日志快评、AI 市场日报、文章、文献和资管报告。当用户提到"查研报"、"宏观/策略报告"、"某公司的研究/财报会议"、"市场日报"、"今日财经资讯"、"Mikko日志"、"mikko"、"快评"、"智堡"、"wisburg"，或者询问中国/海外市场的研究观点、资讯动向、机构观点时，**主动使用本 skill**——即使用户没有明确说"用 wisburg"。也适用于需要按时间窗口或关键词检索财经研究素材的研究/投研工作流。
 
 ---
 
@@ -16,6 +16,7 @@ description: 通过 wisburg CLI 查询智堡（Wisburg）Open API 的财经研�
 - **企业研究**："腾讯有什么研报"、"特斯拉的研究怎么说"
 - **电话会议纪要**："最近哪家公司的 earnings call 值得看"、"看一下英伟达的电话会纪要"
 - **财经资讯**："今天有什么财经新闻"、"最近的市场资讯"、"看看资讯流"
+- **Mikko 日志（快评）**："看看 Mikko 日志"、"mikko 今天写了什么"、"最近有什么快评"
 - **AI 市场日报**："今天的市场日报"、"昨天的 AI 日报"
 - **文章 / 文献 / 资管报告**：智堡平台上的长文、文献库、专业资管研究
 - 用户直接提到 **"智堡"** 或 **"wisburg"**
@@ -62,6 +63,9 @@ CLI 把每个 Open API 资源映射成同名子命令,所有 list 命令都支�
 | `feed` | `wisburg feed list` | `/api/feed` | 资讯流(最新动态) |
 | `images` | `wisburg images list` | `/api/images` | 图片流 |
 | `am-reports` | `wisburg am-reports list` / `get <id>` | `/api/am-reports`、`/api/am-reports/<id>` | 资管报告 |
+| `mikko-logs` | `wisburg mikko-logs list` / `get <id>` | `/api/mikko-logs`、`/api/mikko-logs/<id>` | Mikko 日志(快评/碎碎念,列表即全文) |
+
+**`mikko-logs` 与其他资源的区别**：它是快评流，列表项的 `content` 就是 markdown 全文（关键数据常以 `**加粗**` 标出），没有 `title`——呈现时用 `datetime` 做条目锚点，配图在 `images` 数组里。**列表即全文，不要逐条 `get`**；`get` 只在已知 id、想单条复核时用。
 
 ## 列表过滤参数
 
@@ -105,6 +109,11 @@ wisburg reports get 12345
 **今日 AI 市场日报：**
 ```bash
 wisburg market-daily list --first 1
+```
+
+**某天的 Mikko 日志：**
+```bash
+wisburg mikko-logs list --first 20 --start-time 2026-08-26 --end-time 2026-08-27
 ```
 
 **走原始接口（CLI 没暴露的参数,或子命令不可用时的兜底）：**

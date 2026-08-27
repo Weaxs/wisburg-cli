@@ -67,6 +67,8 @@ node dist/cli.js reports list --first 10
 | 图片流 | `wisburg images list` | `GET /api/images` | [文档](https://open-docs.wisburg.com/docs/api/images) |
 | 资管报告 | `wisburg am-reports list` | `GET /api/am-reports` | [文档](https://open-docs.wisburg.com/docs/api/am-reports) |
 | 资管报告 | `wisburg am-reports get <id>` | `GET /api/am-reports/:id` | [文档](https://open-docs.wisburg.com/docs/api/am-reports) |
+| Mikko 日志 | `wisburg mikko-logs list` | `GET /api/mikko-logs` | [文档](https://open-docs.wisburg.com/docs/api/mikko-logs) |
+| Mikko 日志 | `wisburg mikko-logs get <id>` | `GET /api/mikko-logs/:id` | [文档](https://open-docs.wisburg.com/docs/api/mikko-logs) |
 
 所有列表接口都支持：
 
