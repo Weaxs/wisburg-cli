@@ -1,7 +1,8 @@
 ---
 name: wisburg-research
 description: 通过 wisburg CLI 查询智堡（Wisburg）Open API 的财经研究数据 —— 包括宏观/策略研报、企业研究报告、电话会纪要、财经资讯流、Mikko 日志快评、AI 市场日报、文章、文献和资管报告。当用户提到"查研报"、"宏观/策略报告"、"某公司的研究/财报会议"、"市场日报"、"今日财经资讯"、"Mikko日志"、"mikko"、"快评"、"智堡"、"wisburg"，或者询问中国/海外市场的研究观点、资讯动向、机构观点时，**主动使用本 skill**——即使用户没有明确说"用 wisburg"。也适用于需要按时间窗口或关键词检索财经研究素材的研究/投研工作流。
-
+homepage: https://github.com/Weaxs/wisburg-cli
+metadata: {"openclaw":{"requires":{"bins":["wisburg"]},"primaryEnv":"WISBURG_API_KEY","install":[{"id":"npm","kind":"node","package":"wisburg-cli","bins":["wisburg"],"label":"Install Wisburg CLI (npm)"}]}}
 ---
 
 # Wisburg Research

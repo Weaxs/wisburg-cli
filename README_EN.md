@@ -7,6 +7,15 @@ Chinese documentation: [README.md](./README.md)
 ## Installation
 
 ```bash
+npm install -g wisburg-cli
+npx clawhub@0.23.3 install @weaxs/wisburg-research
+```
+
+Install the CLI from npm and the research skill from ClawHub. OpenClaw can also install the CLI using the skill's declared npm installer.
+
+For development from source:
+
+```bash
 npm install
 npm run build
 npm link
@@ -92,6 +101,12 @@ npm test
 ```
 
 ## CI/CD
+
+Pushing a `v*` tag or manually running `Release` publishes the CLI to npm, then `wisburg-research` to ClawHub. ClawHub manages skill versions automatically: new skills start at `1.0.0`, changed content gets the next patch version, and unchanged content is skipped. The CLI still uses the `package.json` version; keep tag and package versions equal. Tag releases then create a GitHub Release.
+
+Configure the repository secret `CLAWHUB_TOKEN` using a ClawHub Settings → API tokens token with publish access to `weaxs`. npm continues to use the existing trusted publishing configuration.
+
+Run `Publish skill to ClawHub` separately with version left empty for automatic versioning, override the version or owner, or select `dry_run` to preview without publishing. Explicit versions cannot overwrite existing releases. Only `SKILL.md` is uploaded, excluding evaluation data. ClawHub publishes the skill under MIT-0; the CLI remains MIT.
 
 GitHub Actions runs on push, pull request, and manual dispatch:
 

@@ -7,6 +7,15 @@ English documentation: [README_EN.md](./README_EN.md)
 ## 安装
 
 ```bash
+npm install -g wisburg-cli
+npx clawhub@0.23.3 install @weaxs/wisburg-research
+```
+
+CLI 从 npm 安装，研究 skill 从 ClawHub 安装；也可以在 OpenClaw 的 skill 设置中使用声明的 npm 安装器安装 CLI。
+
+从源码开发：
+
+```bash
 npm install
 npm run build
 npm link
@@ -91,6 +100,12 @@ npm test
 ```
 
 ## CI/CD
+
+推送 `v*` 标签或手动运行 `Release` 时，先发布 CLI 到 npm，再发布 `wisburg-research` 到 ClawHub。skill 版本由 ClawHub 自动管理：首次发布 `1.0.0`，内容变化自动升级 patch，内容不变则跳过。CLI 仍使用 `package.json` 版本，标签版本应与其一致。标签发布完成后创建 GitHub Release。
+
+ClawHub 发布使用仓库 Secret `CLAWHUB_TOKEN`（在 ClawHub 的 Settings → API tokens 创建，需有 `weaxs` 的发布权限）。npm 沿用现有 trusted publishing 配置。
+
+单独运行 `Publish skill to ClawHub` 时，version 留空即可自动管理版本，也可指定版本和 owner，或勾选 `dry_run` 预览而不发布。手动指定版本时不能覆盖已有版本。上传仅包含 `SKILL.md`，不含评测数据。ClawHub 上的 skill 按 MIT-0 发布，CLI 保持 MIT。
 
 GitHub Actions 会在 push、pull request 和手动触发时运行：
 
