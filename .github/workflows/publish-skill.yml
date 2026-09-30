@@ -1,0 +1,67 @@
+name: Publish skill to ClawHub
+
+on:
+  workflow_call:
+    secrets:
+      CLAWHUB_TOKEN:
+        required: true
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Skill semver (leave empty for automatic versioning)"
+        required: false
+      owner:
+        description: "ClawHub publisher handle"
+        required: true
+        default: "weaxs"
+      dry_run:
+        description: "Preview without publishing"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install ClawHub CLI
+        run: npm i -g clawhub@0.23.3
+
+      - name: Login
+        if: inputs.dry_run != true
+        run: |
+          if [ -z "$CLAWHUB_TOKEN" ]; then
+            echo "::error::Configure the CLAWHUB_TOKEN repository secret before publishing."
+            exit 1
+          fi
+          clawhub --no-input login --token "$CLAWHUB_TOKEN"
+        env:
+          CLAWHUB_TOKEN: ${{ secrets.CLAWHUB_TOKEN }}
+
+      - name: Publish skill
+        env:
+          SKILL_VERSION: ${{ inputs.version }}
+          SKILL_OWNER: ${{ inputs.owner || 'weaxs' }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          set -euo pipefail
+          ARGS=()
+          if [ -n "$SKILL_VERSION" ]; then ARGS+=(--version "$SKILL_VERSION"); fi
+          if [ -n "$SKILL_OWNER" ]; then ARGS+=(--owner "$SKILL_OWNER"); fi
+          if [ "$DRY_RUN" = "true" ]; then ARGS+=(--dry-run); fi
+          # Publish instructions only; eval fixtures are not part of the skill.
+          SKILL_DIR="$RUNNER_TEMP/wisburg-research"
+          mkdir -p "$SKILL_DIR"
+          cp skills/wisburg-research/SKILL.md "$SKILL_DIR/"
+          clawhub --no-input skill publish "$SKILL_DIR" "${ARGS[@]}" \
+            --source-repo "$GITHUB_REPOSITORY" --source-commit "$GITHUB_SHA" \
+            --source-ref "$GITHUB_REF_NAME" --source-path skills/wisburg-research
